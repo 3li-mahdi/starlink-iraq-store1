@@ -1,0 +1,28 @@
+# Backend (Maven/Java)
+backend/target/
+*.class
+*.log
+.mvn/wrapper/maven-wrapper.jar
+
+# Frontend (Node)
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+frontend/.vite/
+frontend/coverage/
+
+# Env files
+.env
+.env.local
+**/.env
+**/.env.local
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.DS_Store
+
+# Test reports
+frontend/playwright-report/
+frontend/test-results/

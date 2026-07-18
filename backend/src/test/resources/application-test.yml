@@ -1,0 +1,31 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=MySQL
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    database-platform: org.hibernate.dialect.H2Dialect
+  data:
+    redis:
+      host: localhost
+      port: 6399
+
+app:
+  jwt:
+    secret: test-secret-key-for-junit-tests-only-not-for-production-use-1234567890
+    access-token-expiration-ms: 900000
+    refresh-token-expiration-ms: 604800000
+    issuer: starlink-iraq-store-test
+  security:
+    max-failed-login-attempts: 5
+    account-lock-duration-minutes: 15
+  cors:
+    allowed-origins: http://localhost:5173
+  frontend:
+    base-url: http://localhost:5173
+  low-stock-threshold: 5
+  encryption:
+    secret-key: test-encryption-secret-key-for-junit-tests-only

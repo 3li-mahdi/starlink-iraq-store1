@@ -1,0 +1,81 @@
+server:
+  port: ${SERVER_PORT:8080}
+  error:
+    include-message: never
+    include-binding-errors: never
+    include-stacktrace: never
+
+spring:
+  application:
+    name: starlink-iraq-store
+
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/starlink_iraq_store}
+    username: ${DB_USERNAME:CHANGE_ME_DB_USERNAME}
+    password: ${DB_PASSWORD:CHANGE_ME_DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: ${JPA_DDL_AUTO:validate}
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: false
+        jdbc:
+          time_zone: UTC
+
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+
+  mail:
+    host: ${MAIL_HOST:smtp.example.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:CHANGE_ME_MAIL_USERNAME}
+    password: ${MAIL_PASSWORD:CHANGE_ME_MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:CHANGE_ME_REPLACE_WITH_A_LONG_RANDOM_SECRET_AT_LEAST_256_BITS}
+    access-token-expiration-ms: ${JWT_ACCESS_EXPIRATION_MS:900000}      # 15 دقيقة
+    refresh-token-expiration-ms: ${JWT_REFRESH_EXPIRATION_MS:604800000} # 7 أيام
+    issuer: starlink-iraq-store
+
+  security:
+    max-failed-login-attempts: ${MAX_FAILED_LOGIN_ATTEMPTS:5}
+    account-lock-duration-minutes: ${ACCOUNT_LOCK_DURATION_MINUTES:15}
+
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173}
+
+  frontend:
+    base-url: ${FRONTEND_BASE_URL:http://localhost:5173}
+
+  low-stock-threshold: ${LOW_STOCK_THRESHOLD:5}
+
+  encryption:
+    secret-key: ${DB_ENCRYPTION_SECRET_KEY:CHANGE_ME_32_BYTE_BASE64_ENCODED_AES_KEY}
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /v3/api-docs
+
+logging:
+  level:
+    root: INFO
+    com.starlinkiraq.store: INFO
