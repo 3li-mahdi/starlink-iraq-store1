@@ -1,12 +1,18 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import PriceTag from "../components/PriceTag";
 import StockBadge from "../components/StockBadge";
 import StarRating from "../components/StarRating";
 import ProductCard from "../components/ProductCard";
 import Breadcrumbs from "../components/Breadcrumbs";
-import { fetchProduct, fetchRelatedProducts, fetchProductReviews, addProductReview } from "../api/productsApi";
+import {
+  fetchProduct,
+  fetchRelatedProducts,
+  fetchProductReviews,
+  fetchProductVariants,
+  addProductReview,
+} from "../api/productsApi";
 import { addItemToCart } from "../features/cart/cartSlice";
 import { showToast } from "../features/ui/uiSlice";
 
@@ -15,10 +21,12 @@ import { showToast } from "../features/ui/uiSlice";
  */
 export default function ProductDetailPage() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
 
   const [product, setProduct] = useState(null);
+  const [variants, setVariants] = useState([]);
   const [related, setRelated] = useState([]);
   const [reviews, setReviews] = useState(null);
   const [quantity, setQuantity] = useState(1);
@@ -27,10 +35,19 @@ export default function ProductDetailPage() {
 
   useEffect(() => {
     setProduct(null);
+    setQuantity(1);
     fetchProduct(id).then(setProduct);
+    fetchProductVariants(id).then(setVariants);
     fetchRelatedProducts(id).then(setRelated);
     fetchProductReviews(id).then((data) => setReviews(data.content));
   }, [id]);
+
+  function handleVariantChange(event) {
+    const variantId = event.target.value;
+    if (variantId !== String(id)) {
+      navigate(`/products/${variantId}`);
+    }
+  }
 
   function handleAddToCart() {
     dispatch(addItemToCart({ productId: product.id, quantity }))
@@ -85,6 +102,20 @@ export default function ProductDetailPage() {
             <StarRating value={product.averageRating} />
             <span style={{ color: "var(--color-text-muted)", fontSize: 14 }}>({product.averageRating?.toFixed?.(1) ?? "0.0"})</span>
           </div>
+
+          {variants.length > 1 && (
+            <div className="form-field" style={{ maxWidth: 220 }}>
+              <label htmlFor="variant">الموديل</label>
+              <select id="variant" value={String(product.id)} onChange={handleVariantChange}>
+                {variants.map((variant) => (
+                  <option key={variant.id} value={variant.id} disabled={!variant.isActive}>
+                    {variant.variantLabel || `#${variant.id}`}
+                    {variant.isActive ? "" : " (غير متوفر)"}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
           <PriceTag price={product.price} discountPrice={product.discountPrice} />
 

@@ -37,6 +37,15 @@ export function fetchRelatedProducts(id) {
 }
 
 /**
+ * تجلب كل موديلات مجموعة منتج معيّن (مثل Mini/X/Standard) لعرضها كقائمة اختيار.
+ * @param {number|string} id - معرّف أحد موديلات المجموعة
+ * @returns Promise يحتوي على قائمة الموديلات (فارغة إذا لم يكن للمنتج موديلات بديلة)
+ */
+export function fetchProductVariants(id) {
+  return axiosClient.get(`/products/${id}/variants`).then((res) => res.data);
+}
+
+/**
  * تجلب المراجعات المعتمدة لمنتج معيّن.
  * @param {number|string} id - معرّف المنتج
  * @param {number} page - رقم الصفحة

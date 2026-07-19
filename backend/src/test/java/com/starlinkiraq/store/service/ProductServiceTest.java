@@ -3,6 +3,7 @@ package com.starlinkiraq.store.service;
 import com.starlinkiraq.store.config.AppProperties;
 import com.starlinkiraq.store.dto.product.ProductRequest;
 import com.starlinkiraq.store.dto.product.ProductResponse;
+import com.starlinkiraq.store.dto.product.ProductVariantResponse;
 import com.starlinkiraq.store.entity.Product;
 import com.starlinkiraq.store.entity.ProductType;
 import com.starlinkiraq.store.exception.ResourceNotFoundException;
@@ -16,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -50,7 +52,7 @@ class ProductServiceTest {
 
     private ProductRequest buildRequest() {
         return new ProductRequest("طبق Starlink", "وصف المنتج", BigDecimal.valueOf(900), null,
-                "https://example.com/dish.png", ProductType.PHYSICAL, 10, true, null, "dishes", true);
+                "https://example.com/dish.png", ProductType.PHYSICAL, 10, true, null, "dishes", true, null, null);
     }
 
     @Test
@@ -101,5 +103,38 @@ class ProductServiceTest {
         productService.deleteProduct(1L);
 
         assertThat(product.isActive()).isFalse();
+    }
+
+    @Test
+    void getVariants_shouldReturnEmptyList_whenProductHasNoVariantGroup() {
+        Product product = Product.builder().id(1L).name("منتج فريد").price(BigDecimal.TEN)
+                .productType(ProductType.PHYSICAL).requiresShipping(true).isActive(true)
+                .category("misc").averageRating(BigDecimal.ZERO).variantGroupKey(null).build();
+        when(productRepository.findById(1L)).thenReturn(Optional.of(product));
+
+        List<ProductVariantResponse> variants = productService.getVariants(1L);
+
+        assertThat(variants).isEmpty();
+    }
+
+    @Test
+    void getVariants_shouldReturnAllModelsInSameGroup_whenProductHasVariantGroup() {
+        Product mini = Product.builder().id(1L).name("طبق Starlink Mini").price(BigDecimal.valueOf(500))
+                .productType(ProductType.PHYSICAL).requiresShipping(true).isActive(true)
+                .category("dishes").averageRating(BigDecimal.ZERO)
+                .variantGroupKey("starlink-dish").variantLabel("Mini").build();
+        Product standard = Product.builder().id(2L).name("طبق Starlink Standard").price(BigDecimal.valueOf(900))
+                .productType(ProductType.PHYSICAL).requiresShipping(true).isActive(true)
+                .category("dishes").averageRating(BigDecimal.ZERO)
+                .variantGroupKey("starlink-dish").variantLabel("Standard").build();
+
+        when(productRepository.findById(1L)).thenReturn(Optional.of(mini));
+        when(productRepository.findByVariantGroupKeyAndIsActiveTrueOrderByVariantLabelAsc("starlink-dish"))
+                .thenReturn(List.of(mini, standard));
+
+        List<ProductVariantResponse> variants = productService.getVariants(1L);
+
+        assertThat(variants).hasSize(2);
+        assertThat(variants).extracting(ProductVariantResponse::variantLabel).containsExactly("Mini", "Standard");
     }
 }

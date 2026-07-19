@@ -43,6 +43,12 @@ public record ProductRequest(
         @Size(max = 100)
         String category,
 
-        boolean isActive
+        boolean isActive,
+
+        @Size(max = 100)
+        String variantGroupKey,
+
+        @Size(max = 50)
+        String variantLabel
 ) {
 }

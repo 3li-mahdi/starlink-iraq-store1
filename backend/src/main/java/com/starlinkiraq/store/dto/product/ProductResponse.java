@@ -20,7 +20,9 @@ public record ProductResponse(
         String category,
         boolean isActive,
         BigDecimal averageRating,
-        boolean lowStock
+        boolean lowStock,
+        String variantGroupKey,
+        String variantLabel
 ) {
     public static ProductResponse from(Product product, int lowStockThreshold) {
         return new ProductResponse(
@@ -28,7 +30,7 @@ public record ProductResponse(
                 product.getDiscountPrice(), product.getImageUrl(), product.getProductType(),
                 product.getStockQuantity(), product.isRequiresShipping(), product.getDigitalDeliveryType(),
                 product.getCategory(), product.isActive(), product.getAverageRating(),
-                product.isLowStock(lowStockThreshold)
+                product.isLowStock(lowStockThreshold), product.getVariantGroupKey(), product.getVariantLabel()
         );
     }
 }

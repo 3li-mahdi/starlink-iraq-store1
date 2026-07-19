@@ -2,6 +2,7 @@ package com.starlinkiraq.store.controller;
 
 import com.starlinkiraq.store.dto.common.PageResponse;
 import com.starlinkiraq.store.dto.product.ProductResponse;
+import com.starlinkiraq.store.dto.product.ProductVariantResponse;
 import com.starlinkiraq.store.dto.review.ReviewRequest;
 import com.starlinkiraq.store.dto.review.ReviewResponse;
 import com.starlinkiraq.store.entity.ProductType;
@@ -62,6 +63,12 @@ public class ProductController {
     @GetMapping("/{id}/related")
     public ResponseEntity<List<ProductResponse>> getRelatedProducts(@PathVariable Long id) {
         return ResponseEntity.ok(productService.getRelatedProducts(id, 4));
+    }
+
+    @Operation(summary = "جلب كل موديلات مجموعة منتج معيّن (مثل Mini/X/Standard) لعرضها كقائمة اختيار")
+    @GetMapping("/{id}/variants")
+    public ResponseEntity<List<ProductVariantResponse>> getVariants(@PathVariable Long id) {
+        return ResponseEntity.ok(productService.getVariants(id));
     }
 
     @Operation(summary = "جلب المراجعات المعتمدة لمنتج معيّن")

@@ -4,6 +4,7 @@ import com.starlinkiraq.store.config.AppProperties;
 import com.starlinkiraq.store.dto.product.AddDigitalAssetsRequest;
 import com.starlinkiraq.store.dto.product.ProductRequest;
 import com.starlinkiraq.store.dto.product.ProductResponse;
+import com.starlinkiraq.store.dto.product.ProductVariantResponse;
 import com.starlinkiraq.store.entity.DigitalAsset;
 import com.starlinkiraq.store.entity.Product;
 import com.starlinkiraq.store.entity.ProductType;
@@ -83,6 +84,26 @@ public class ProductService {
                 .filter(p -> !p.getId().equals(productId))
                 .limit(limit)
                 .map(p -> ProductResponse.from(p, appProperties.getLowStockThreshold()))
+                .toList();
+    }
+
+    /**
+     * يجلب كل موديلات نفس مجموعة منتج معيّن (مثل Mini/X/Standard) لعرضها كقائمة اختيار Dropdown،
+     * أو قائمة فارغة إذا كان المنتج بدون موديلات بديلة.
+     *
+     * @param productId معرّف أحد موديلات المجموعة
+     * @return قائمة الموديلات المفعّلة بنفس المجموعة، مرتبة أبجدياً حسب اسم الموديل
+     */
+    @Transactional(readOnly = true)
+    public java.util.List<ProductVariantResponse> getVariants(Long productId) {
+        Product product = findProductOrThrow(productId);
+        if (product.getVariantGroupKey() == null || product.getVariantGroupKey().isBlank()) {
+            return java.util.List.of();
+        }
+        return productRepository
+                .findByVariantGroupKeyAndIsActiveTrueOrderByVariantLabelAsc(product.getVariantGroupKey())
+                .stream()
+                .map(ProductVariantResponse::from)
                 .toList();
     }
 
@@ -178,7 +199,13 @@ public class ProductService {
         product.setDigitalDeliveryType(request.digitalDeliveryType());
         product.setCategory(request.category());
         product.setActive(request.isActive());
+        product.setVariantGroupKey(blankToNull(request.variantGroupKey()));
+        product.setVariantLabel(blankToNull(request.variantLabel()));
         return product;
+    }
+
+    private String blankToNull(String value) {
+        return (value == null || value.isBlank()) ? null : value.trim();
     }
 
     Product findProductOrThrow(Long id) {

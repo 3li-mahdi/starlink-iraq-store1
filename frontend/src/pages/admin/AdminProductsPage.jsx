@@ -16,6 +16,8 @@ const EMPTY_FORM = {
   digitalDeliveryType: "",
   category: "",
   isActive: true,
+  variantGroupKey: "",
+  variantLabel: "",
 };
 
 /**
@@ -42,6 +44,8 @@ export default function AdminProductsPage() {
       discountPrice: product.discountPrice ?? "",
       stockQuantity: product.stockQuantity ?? "",
       digitalDeliveryType: product.digitalDeliveryType ?? "",
+      variantGroupKey: product.variantGroupKey ?? "",
+      variantLabel: product.variantLabel ?? "",
     });
   }
 
@@ -137,6 +141,26 @@ export default function AdminProductsPage() {
             </select>
           </div>
         )}
+        <div className="form-field">
+          <label>مجموعة الموديلات (اختياري)</label>
+          <input
+            placeholder="مثال: starlink-dish"
+            value={form.variantGroupKey}
+            onChange={(e) => setForm((f) => ({ ...f, variantGroupKey: e.target.value }))}
+          />
+        </div>
+        <div className="form-field">
+          <label>اسم هذا الموديل (اختياري)</label>
+          <input
+            placeholder="مثال: Mini / X / Standard"
+            value={form.variantLabel}
+            onChange={(e) => setForm((f) => ({ ...f, variantLabel: e.target.value }))}
+          />
+        </div>
+        <p style={{ gridColumn: "1 / -1", margin: 0, fontSize: 12, color: "var(--color-text-muted)" }}>
+          إذا كان هذا المنتج له أكثر من موديل (مثل Mini وX وStandard)، أضف كل موديل كمنتج منفصل بنفس "مجموعة
+          الموديلات" مع اسم موديل مختلف لكل واحد، وراح يظهر Dropdown تلقائياً بصفحة المنتج للتبديل بينها.
+        </p>
         <div style={{ display: "flex", gap: 10, gridColumn: "1 / -1" }}>
           <button className="btn btn-cta" type="submit" disabled={saving}>
             {editingId ? "حفظ التعديلات" : "إضافة المنتج"}
