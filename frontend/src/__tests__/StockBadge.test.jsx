@@ -9,7 +9,7 @@ describe("StockBadge", () => {
 
   test("يعرض 'نفذت الكمية' عندما تكون الكمية صفراً", () => {
     render(<StockBadge stockQuantity={0} lowStock={false} requiresShipping={true} />);
-    expect(screen.getByText("نفذت الكمية")).toBeInTheDocument();
+    expect(screen.getByText(/نفذت الكمية/)).toBeInTheDocument();
   });
 
   test("لا يعرض أي شارة عندما يكون المخزون كافياً", () => {

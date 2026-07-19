@@ -5,6 +5,7 @@ import PriceTag from "../components/PriceTag";
 import StockBadge from "../components/StockBadge";
 import StarRating from "../components/StarRating";
 import ProductCard from "../components/ProductCard";
+import Breadcrumbs from "../components/Breadcrumbs";
 import { fetchProduct, fetchRelatedProducts, fetchProductReviews, addProductReview } from "../api/productsApi";
 import { addItemToCart } from "../features/cart/cartSlice";
 import { showToast } from "../features/ui/uiSlice";
@@ -67,7 +68,8 @@ export default function ProductDetailPage() {
 
   return (
     <div style={{ padding: "24px 0" }}>
-      <div style={{ display: "grid", gridTemplateColumns: "minmax(260px, 1fr) minmax(280px, 1fr)", gap: 40, marginBottom: 48 }}>
+      <Breadcrumbs items={[{ label: "المتجر", to: "/products" }, { label: product.name }]} />
+      <div className="two-col-grid" style={{ marginBottom: 48 }}>
         <div className="card" style={{ aspectRatio: "1/1", overflow: "hidden" }}>
           {product.imageUrl ? (
             <img src={product.imageUrl} alt={product.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />

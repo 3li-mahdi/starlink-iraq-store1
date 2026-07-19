@@ -62,12 +62,14 @@ export default function ProductCard({ product }) {
               top: 10,
               insetInlineEnd: 10,
               border: "none",
-              background: "rgba(255,255,255,0.9)",
+              background: "rgba(255,255,255,0.92)",
               borderRadius: "50%",
               width: 34,
               height: 34,
               fontSize: 16,
-              color: isWishlisted ? "var(--color-danger)" : "var(--color-text-muted)",
+              color: "#000000",
+              opacity: isWishlisted ? 1 : 0.55,
+              transition: "opacity 0.2s ease",
             }}
           >
             {isWishlisted ? "♥" : "♡"}

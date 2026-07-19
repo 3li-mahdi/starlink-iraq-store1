@@ -37,6 +37,7 @@ export default function AdminOrdersPage() {
   return (
     <div>
       <h1>إدارة الطلبات</h1>
+      <div className="admin-table-wrap">
       <table style={{ width: "100%", borderCollapse: "collapse" }}>
         <thead>
           <tr style={{ textAlign: "start", borderBottom: "2px solid var(--color-border)" }}>
@@ -65,6 +66,7 @@ export default function AdminOrdersPage() {
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   );
 }

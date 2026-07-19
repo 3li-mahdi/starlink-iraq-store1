@@ -83,7 +83,7 @@ export default function AdminProductsPage() {
     <div>
       <h1>إدارة المنتجات</h1>
 
-      <form onSubmit={handleSubmit} className="card" style={{ padding: 20, marginBottom: 24, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+      <form onSubmit={handleSubmit} className="card admin-form-grid" style={{ padding: 20, marginBottom: 24 }}>
         <div className="form-field">
           <label>اسم المنتج</label>
           <input required value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} />
@@ -149,6 +149,7 @@ export default function AdminProductsPage() {
         </div>
       </form>
 
+      <div className="admin-table-wrap">
       <table style={{ width: "100%", borderCollapse: "collapse" }}>
         <thead>
           <tr style={{ textAlign: "start", borderBottom: "2px solid var(--color-border)" }}>
@@ -178,6 +179,7 @@ export default function AdminProductsPage() {
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   );
 }

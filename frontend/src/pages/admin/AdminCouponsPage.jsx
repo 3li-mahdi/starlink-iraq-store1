@@ -48,7 +48,7 @@ export default function AdminCouponsPage() {
     <div>
       <h1>إدارة الكوبونات</h1>
 
-      <form onSubmit={handleSubmit} className="card" style={{ padding: 20, marginBottom: 24, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+      <form onSubmit={handleSubmit} className="card admin-form-grid" style={{ padding: 20, marginBottom: 24 }}>
         <div className="form-field">
           <label>الكود</label>
           <input required value={form.code} onChange={(e) => setForm((f) => ({ ...f, code: e.target.value.toUpperCase() }))} />
@@ -83,6 +83,7 @@ export default function AdminCouponsPage() {
         </div>
       </form>
 
+      <div className="admin-table-wrap">
       <table style={{ width: "100%", borderCollapse: "collapse" }}>
         <thead>
           <tr style={{ textAlign: "start", borderBottom: "2px solid var(--color-border)" }}>
@@ -111,6 +112,7 @@ export default function AdminCouponsPage() {
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   );
 }

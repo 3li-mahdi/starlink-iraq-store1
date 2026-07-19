@@ -5,6 +5,7 @@ import { checkout, validateCoupon } from "../api/ordersApi";
 import { clearCartState } from "../features/cart/cartSlice";
 import { showToast } from "../features/ui/uiSlice";
 import { formatIqd } from "../utils/format";
+import Breadcrumbs from "../components/Breadcrumbs";
 
 /**
  * صفحة إتمام الشراء بخطوتين فقط لتقليل نسبة التسرّب: (1) عنوان الشحن (2) مراجعة الطلب والدفع.
@@ -54,6 +55,7 @@ export default function CheckoutPage() {
 
   return (
     <div style={{ maxWidth: 640, margin: "24px auto", padding: "0 16px" }}>
+      <Breadcrumbs items={[{ label: "سلة التسوق", to: "/cart" }, { label: "إتمام الشراء" }]} />
       <div style={{ display: "flex", gap: 8, marginBottom: 24 }}>
         <StepIndicator active={step === 1} label="1. عنوان الشحن" />
         <StepIndicator active={step === 2} label="2. المراجعة والدفع" />
@@ -104,14 +106,15 @@ export default function CheckoutPage() {
               placeholder="كود الخصم (إن وجد)"
               value={couponCode}
               onChange={(e) => setCouponCode(e.target.value)}
-              style={{ flex: 1, padding: "10px 14px", borderRadius: "var(--radius-md)", border: "1.5px solid var(--color-border)" }}
+              style={{ flex: 1, padding: "10px 14px", borderRadius: "var(--radius-md)", border: "1.5px solid var(--color-border-light)", backgroundColor: "var(--color-surface)", color: "var(--color-text)" }}
             />
             <button className="btn btn-outline" onClick={handleApplyCoupon} disabled={couponLoading}>
               تطبيق
             </button>
           </div>
           {couponResult && (
-            <p className={couponResult.valid ? "" : "field-error"} style={{ color: couponResult.valid ? "var(--color-success)" : undefined }}>
+            <p className={couponResult.valid ? "" : "field-error"}>
+              {couponResult.valid ? "✓ " : "✕ "}
               {couponResult.message}
             </p>
           )}
@@ -122,7 +125,7 @@ export default function CheckoutPage() {
             <span>{formatIqd(totalAmount)}</span>
           </div>
           {discount > 0 && (
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4, color: "var(--color-success)" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
               <span>الخصم</span>
               <span>- {formatIqd(discount)}</span>
             </div>
@@ -161,8 +164,9 @@ function StepIndicator({ active, label }) {
         textAlign: "center",
         fontWeight: 700,
         fontSize: 13,
-        backgroundColor: active ? "var(--color-primary)" : "var(--color-border)",
-        color: active ? "#fff" : "var(--color-text-muted)",
+        backgroundColor: active ? "var(--color-cta-bg)" : "var(--color-surface-alt)",
+        color: active ? "var(--color-cta-text)" : "var(--color-text-muted)",
+        transition: "background-color 0.2s ease, color 0.2s ease",
       }}
     >
       {label}

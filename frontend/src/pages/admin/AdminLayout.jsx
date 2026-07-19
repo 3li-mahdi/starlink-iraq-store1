@@ -5,7 +5,7 @@ import { NavLink, Outlet } from "react-router-dom";
  */
 export default function AdminLayout() {
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "220px 1fr", gap: 28, padding: "24px 0" }}>
+    <div className="admin-grid" style={{ padding: "24px 0" }}>
       <aside className="card" style={{ padding: 16, height: "fit-content", position: "sticky", top: 88 }}>
         <h2 style={{ fontSize: 16, marginTop: 0 }}>لوحة التحكم</h2>
         <nav style={{ display: "flex", flexDirection: "column", gap: 6 }}>
@@ -30,8 +30,9 @@ function AdminNavLink({ to, label, end }) {
         padding: "10px 12px",
         borderRadius: "var(--radius-md)",
         fontWeight: 600,
-        backgroundColor: isActive ? "var(--color-primary)" : "transparent",
-        color: isActive ? "#fff" : "var(--color-text)",
+        backgroundColor: isActive ? "var(--color-cta-bg)" : "transparent",
+        color: isActive ? "var(--color-cta-text)" : "var(--color-text)",
+        transition: "background-color 0.2s ease, color 0.2s ease",
       })}
     >
       {label}

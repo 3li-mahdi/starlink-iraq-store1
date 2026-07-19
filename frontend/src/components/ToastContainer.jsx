@@ -3,14 +3,15 @@ import { AnimatePresence, motion } from "framer-motion";
 import { dismissToast } from "../features/ui/uiSlice";
 import { useEffect } from "react";
 
-const TYPE_COLORS = {
-  success: "var(--color-success)",
-  error: "var(--color-danger)",
-  info: "var(--color-primary)",
+const TYPE_ICONS = {
+  success: "✓",
+  error: "✕",
+  info: "ℹ",
 };
 
 /**
  * عنصر واحد من الإشعارات المؤقتة (toast)، يختفي تلقائياً بعد بضع ثوانٍ.
+ * التمييز بين الأنواع يتم عبر الأيقونة فقط، بدون ألوان زاهية، حفاظاً على الثيم الأحادي.
  */
 function Toast({ toast, onDismiss }) {
   useEffect(() => {
@@ -25,19 +26,24 @@ function Toast({ toast, onDismiss }) {
       exit={{ opacity: 0, y: -8, scale: 0.97 }}
       transition={{ duration: 0.18 }}
       role="status"
+      className="card"
       style={{
-        backgroundColor: "var(--color-surface)",
-        borderInlineStart: `4px solid ${TYPE_COLORS[toast.type] || TYPE_COLORS.info}`,
+        display: "flex",
+        alignItems: "center",
+        gap: 10,
         boxShadow: "var(--shadow-elevated)",
-        borderRadius: "var(--radius-md)",
         padding: "12px 16px",
         minWidth: 260,
         color: "var(--color-text)",
         fontSize: 14,
         fontWeight: 600,
+        cursor: "pointer",
       }}
       onClick={onDismiss}
     >
+      <span aria-hidden style={{ fontWeight: 800 }}>
+        {TYPE_ICONS[toast.type] || TYPE_ICONS.info}
+      </span>
       {toast.message}
     </motion.div>
   );

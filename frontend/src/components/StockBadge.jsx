@@ -7,10 +7,10 @@ export default function StockBadge({ stockQuantity, lowStock, requiresShipping }
     return null;
   }
   if (stockQuantity === 0) {
-    return <span className="badge badge-muted">نفذت الكمية</span>;
+    return <span className="badge badge-muted">✕ نفذت الكمية</span>;
   }
   if (lowStock) {
-    return <span className="badge badge-danger">متبقي {stockQuantity} قطع فقط!</span>;
+    return <span className="badge badge-danger">⚠ متبقي {stockQuantity} قطع فقط!</span>;
   }
   return null;
 }

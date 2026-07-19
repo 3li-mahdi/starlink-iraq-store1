@@ -19,6 +19,8 @@ import AdminLayout from "./pages/admin/AdminLayout";
 import AdminProductsPage from "./pages/admin/AdminProductsPage";
 import AdminOrdersPage from "./pages/admin/AdminOrdersPage";
 import AdminCouponsPage from "./pages/admin/AdminCouponsPage";
+import ContactPage from "./pages/ContactPage";
+import HelpCenterPage from "./pages/HelpCenterPage";
 import useSessionBootstrap from "./hooks/useSessionBootstrap";
 
 /**
@@ -39,6 +41,8 @@ export default function App() {
           <Route path="/cart" element={<CartPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/help" element={<HelpCenterPage />} />
           <Route
             path="/wishlist"
             element={

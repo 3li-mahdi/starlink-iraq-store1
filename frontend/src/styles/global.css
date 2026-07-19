@@ -1,57 +1,26 @@
 /*
-  نظام الألوان يتبع مبادئ قسم 5 من متطلبات المشروع:
-  - Primary (كحلي/أزرق داكن): ثقة وموثوقية لمنتج تقني
-  - CTA أساسي (برتقالي): "أضف للسلة" - إلحاح وحماس
-  - CTA نهائي (أخضر): "إتمام الشراء" / "الدفع" - أمان وموافقة
-  - تنبيهات وخصومات (أحمر): ندرة وإلحاح
-  - خلفية فاتحة نظيفة مع دعم Dark Mode بنفس المبدأ
+  الثيم النهائي أحادي اللون بالكامل (Dark Mode فقط): أسود/أبيض/رصاصي، بدون أي ألوان زاهية إضافية.
+  التمييز بين الحالات (نجاح/خطأ/تنبيه) يتم عبر الأيقونات ودرجات الرصاصي والتباين، وليس بالألوان.
 */
 :root {
-  --color-primary: #0b2545;
-  --color-primary-light: #13345f;
-  --color-primary-dark: #071a33;
-  --color-cta: #ff7a1a;
-  --color-cta-hover: #e8690a;
-  --color-success: #16a34a;
-  --color-success-hover: #128a3e;
-  --color-danger: #dc2626;
-  --color-danger-bg: #fee2e2;
-  --color-bg: #f8fafc;
-  --color-surface: #ffffff;
-  --color-text: #0f172a;
-  --color-text-muted: #5b6b82;
-  --color-border: #e2e8f0;
+  --color-bg: #000000;
+  --color-surface: #121212;
+  --color-surface-alt: #1a1a1a;
+  --color-text: #ffffff;
+  --color-text-muted: #a3a3a3;
+  --color-border: #2b2b2b;
+  --color-border-light: #3f3f3f;
+  --color-cta-bg: #ffffff;
+  --color-cta-text: #000000;
+  --color-cta-hover-bg: #d4d4d4;
   --radius-md: 10px;
   --radius-lg: 16px;
-  --shadow-card: 0 1px 3px rgba(15, 23, 42, 0.08), 0 1px 2px rgba(15, 23, 42, 0.06);
-  --shadow-elevated: 0 10px 30px rgba(11, 37, 69, 0.12);
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-elevated: 0 10px 30px rgba(0, 0, 0, 0.6);
   --font-family: "Cairo", "Tahoma", system-ui, sans-serif;
-}
-
-:root[data-theme="dark"] {
-  --color-primary: #17518f;
-  --color-primary-light: #1f66ad;
-  --color-primary-dark: #0b2545;
-  --color-bg: #0b1220;
-  --color-surface: #121a2b;
-  --color-text: #eef2f8;
-  --color-text-muted: #96a3b8;
-  --color-border: #24304a;
-  --color-danger-bg: rgba(220, 38, 38, 0.18);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --color-primary: #17518f;
-    --color-primary-light: #1f66ad;
-    --color-primary-dark: #0b2545;
-    --color-bg: #0b1220;
-    --color-surface: #121a2b;
-    --color-text: #eef2f8;
-    --color-text-muted: #96a3b8;
-    --color-border: #24304a;
-    --color-danger-bg: rgba(220, 38, 38, 0.18);
-  }
+  --transition-fast: 0.2s ease;
+  --transition-base: 0.3s ease;
+  color-scheme: dark;
 }
 
 * {
@@ -75,6 +44,11 @@ body {
 a {
   color: inherit;
   text-decoration: none;
+  transition: color var(--transition-fast), opacity var(--transition-fast);
+}
+
+a:hover {
+  color: var(--color-text-muted);
 }
 
 button {
@@ -93,7 +67,32 @@ img {
   padding: 0 20px;
 }
 
-/* أزرار عامة */
+/* Scrollbar مخصص: نحيف، لون معكوس عن الخلفية السوداء */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-light) var(--color-bg);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-border-light);
+  border-radius: 999px;
+  border: 2px solid var(--color-bg);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #6b6b6b;
+}
+
+/* أزرار عامة - كل زر يغيّر لونه بسلاسة عند مرور الماوس (0.2s-0.3s، بدون قفزة) */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -101,50 +100,50 @@ img {
   gap: 8px;
   padding: 12px 22px;
   border-radius: var(--radius-md);
-  border: none;
+  border: 1.5px solid transparent;
   font-weight: 700;
   font-size: 15px;
-  transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+  transition: background-color var(--transition-base), color var(--transition-base),
+    border-color var(--transition-base), transform var(--transition-fast), opacity var(--transition-fast);
 }
 
-.btn:active {
+.btn:active:not(:disabled) {
   transform: scale(0.98);
 }
 
 .btn:disabled {
-  opacity: 0.55;
+  opacity: 0.4;
   cursor: not-allowed;
   transform: none;
 }
 
 .btn-cta {
-  background-color: var(--color-cta);
-  color: #fff;
-  box-shadow: 0 6px 16px rgba(255, 122, 26, 0.35);
+  background-color: var(--color-cta-bg);
+  color: var(--color-cta-text);
 }
 
 .btn-cta:hover:not(:disabled) {
-  background-color: var(--color-cta-hover);
+  background-color: var(--color-cta-hover-bg);
 }
 
 .btn-success {
-  background-color: var(--color-success);
-  color: #fff;
-  box-shadow: 0 6px 16px rgba(22, 163, 74, 0.35);
+  background-color: var(--color-cta-bg);
+  color: var(--color-cta-text);
 }
 
 .btn-success:hover:not(:disabled) {
-  background-color: var(--color-success-hover);
+  background-color: var(--color-cta-hover-bg);
 }
 
 .btn-outline {
   background-color: transparent;
-  color: var(--color-primary);
-  border: 1.5px solid var(--color-border);
+  color: var(--color-text);
+  border-color: var(--color-border-light);
 }
 
 .btn-outline:hover:not(:disabled) {
-  border-color: var(--color-primary);
+  border-color: var(--color-text);
+  background-color: var(--color-surface-alt);
 }
 
 .btn-ghost {
@@ -153,10 +152,19 @@ img {
   padding: 8px 12px;
 }
 
+.btn-ghost:hover:not(:disabled) {
+  color: var(--color-text);
+}
+
 .btn-danger-text {
   background: transparent;
-  color: var(--color-danger);
+  color: var(--color-text-muted);
   padding: 6px 10px;
+  border-color: transparent;
+}
+
+.btn-danger-text:hover:not(:disabled) {
+  color: var(--color-text);
 }
 
 /* بطاقات */
@@ -165,9 +173,10 @@ img {
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
+  transition: border-color var(--transition-base);
 }
 
-/* شارات */
+/* شارات - يميَّز بين الحالات بالأيقونة والتباين وليس باللون */
 .badge {
   display: inline-flex;
   align-items: center;
@@ -176,20 +185,23 @@ img {
   border-radius: 999px;
   font-size: 12px;
   font-weight: 700;
+  border: 1px solid var(--color-border-light);
 }
 
 .badge-danger {
-  background-color: var(--color-danger-bg);
-  color: var(--color-danger);
+  background-color: var(--color-surface-alt);
+  color: var(--color-text);
+  border-style: dashed;
 }
 
 .badge-success {
-  background-color: rgba(22, 163, 74, 0.12);
-  color: var(--color-success-hover);
+  background-color: var(--color-cta-bg);
+  color: var(--color-cta-text);
+  border-color: var(--color-cta-bg);
 }
 
 .badge-muted {
-  background-color: var(--color-border);
+  background-color: transparent;
   color: var(--color-text-muted);
 }
 
@@ -197,17 +209,7 @@ img {
 .price-current {
   font-size: 22px;
   font-weight: 800;
-  color: var(--color-primary);
-}
-
-:root[data-theme="dark"] .price-current {
-  color: #dbe7f7;
-}
-
-@media (prefers-color-scheme: dark) {
-  .price-current {
-    color: #dbe7f7;
-  }
+  color: var(--color-text);
 }
 
 .price-original {
@@ -227,7 +229,7 @@ img {
 }
 
 .skeleton {
-  background: linear-gradient(90deg, var(--color-border) 25%, #eef2f7 37%, var(--color-border) 63%);
+  background: linear-gradient(90deg, var(--color-surface) 25%, var(--color-surface-alt) 37%, var(--color-surface) 63%);
   background-size: 400% 100%;
   animation: skeleton-loading 1.4s ease infinite;
   border-radius: var(--radius-md);
@@ -267,20 +269,88 @@ img {
   font-family: inherit;
   padding: 11px 14px;
   border-radius: var(--radius-md);
-  border: 1.5px solid var(--color-border);
+  border: 1.5px solid var(--color-border-light);
   background-color: var(--color-surface);
   color: var(--color-text);
   font-size: 15px;
+  transition: border-color var(--transition-fast);
 }
 
 .form-field input:focus,
 .form-field select:focus,
 .form-field textarea:focus {
-  outline: 2px solid var(--color-primary-light);
-  outline-offset: 1px;
+  outline: none;
+  border-color: var(--color-text);
 }
 
 .field-error {
-  color: var(--color-danger);
+  color: var(--color-text);
   font-size: 13px;
+  border-inline-start: 2px solid var(--color-text-muted);
+  padding-inline-start: 8px;
+}
+
+/* عناصر تفاعلية عامة (روابط، أيقونات) - انتقال سلس عند مرور الماوس */
+.icon-btn {
+  transition: color var(--transition-fast), background-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.icon-btn:hover {
+  transform: translateY(-1px);
+}
+
+/* تخطيطات متجاوبة (Responsive) */
+.two-col-grid {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) minmax(280px, 1fr);
+  gap: 40px;
+}
+
+.cart-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 32px;
+  align-items: start;
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 28px;
+}
+
+.admin-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.admin-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+@media (max-width: 860px) {
+  .two-col-grid,
+  .cart-grid,
+  .admin-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .admin-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 520px) {
+  .container {
+    padding: 0 14px;
+  }
+
+  .grid-products {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+  }
 }

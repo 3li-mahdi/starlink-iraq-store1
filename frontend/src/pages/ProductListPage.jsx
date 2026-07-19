@@ -1,17 +1,28 @@
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
 import SkeletonProductCard from "../components/SkeletonProductCard";
 import Pagination from "../components/Pagination";
+import Breadcrumbs from "../components/Breadcrumbs";
 import { fetchProducts } from "../api/productsApi";
 import { useDebouncedValue } from "../hooks/useDebouncedValue";
 
 const CATEGORIES = ["", "أطباق", "راوترات", "كيبلات", "اشتراكات"];
 
+const inputStyle = {
+  padding: "10px 14px",
+  borderRadius: "var(--radius-md)",
+  border: "1.5px solid var(--color-border-light)",
+  backgroundColor: "var(--color-surface)",
+  color: "var(--color-text)",
+};
+
 /**
  * صفحة المتجر: بحث وفلترة ديناميكية (فئة، سعر، نوع) وصفحات نتائج، دون إعادة تحميل الصفحة.
  */
 export default function ProductListPage() {
-  const [search, setSearch] = useState("");
+  const [searchParams] = useSearchParams();
+  const [search, setSearch] = useState(searchParams.get("search") || "");
   const [category, setCategory] = useState("");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
@@ -46,6 +57,7 @@ export default function ProductListPage() {
 
   return (
     <div style={{ padding: "24px 0" }}>
+      <Breadcrumbs items={[{ label: "المتجر" }]} />
       <h1 style={{ marginBottom: 20 }}>المتجر</h1>
 
       <div className="card" style={{ padding: 16, marginBottom: 24, display: "flex", flexWrap: "wrap", gap: 12 }}>
@@ -54,16 +66,16 @@ export default function ProductListPage() {
           placeholder="ابحث عن منتج..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          style={{ flex: "1 1 220px", padding: "10px 14px", borderRadius: "var(--radius-md)", border: "1.5px solid var(--color-border)" }}
+          style={{ ...inputStyle, flex: "1 1 220px" }}
         />
-        <select value={category} onChange={(e) => setCategory(e.target.value)} style={{ padding: "10px 14px", borderRadius: "var(--radius-md)", border: "1.5px solid var(--color-border)" }}>
+        <select value={category} onChange={(e) => setCategory(e.target.value)} style={inputStyle}>
           {CATEGORIES.map((c) => (
             <option key={c} value={c}>
               {c || "كل الفئات"}
             </option>
           ))}
         </select>
-        <select value={productType} onChange={(e) => setProductType(e.target.value)} style={{ padding: "10px 14px", borderRadius: "var(--radius-md)", border: "1.5px solid var(--color-border)" }}>
+        <select value={productType} onChange={(e) => setProductType(e.target.value)} style={inputStyle}>
           <option value="">كل الأنواع</option>
           <option value="PHYSICAL">مادي</option>
           <option value="DIGITAL">رقمي</option>
@@ -73,14 +85,14 @@ export default function ProductListPage() {
           placeholder="أقل سعر"
           value={minPrice}
           onChange={(e) => setMinPrice(e.target.value)}
-          style={{ width: 110, padding: "10px 14px", borderRadius: "var(--radius-md)", border: "1.5px solid var(--color-border)" }}
+          style={{ ...inputStyle, width: 110 }}
         />
         <input
           type="number"
           placeholder="أعلى سعر"
           value={maxPrice}
           onChange={(e) => setMaxPrice(e.target.value)}
-          style={{ width: 110, padding: "10px 14px", borderRadius: "var(--radius-md)", border: "1.5px solid var(--color-border)" }}
+          style={{ ...inputStyle, width: 110 }}
         />
       </div>
 
@@ -91,7 +103,10 @@ export default function ProductListPage() {
       </div>
 
       {!loading && result && result.content.length === 0 && (
-        <p style={{ textAlign: "center", color: "var(--color-text-muted)", marginTop: 40 }}>لا توجد منتجات مطابقة لبحثك.</p>
+        <div style={{ textAlign: "center", padding: "60px 0", color: "var(--color-text-muted)" }}>
+          <p style={{ fontSize: 32 }}>🔎</p>
+          <p>لا توجد منتجات مطابقة لبحثك.</p>
+        </div>
       )}
 
       {result && <Pagination page={result.page} totalPages={result.totalPages} onChange={setPage} />}
