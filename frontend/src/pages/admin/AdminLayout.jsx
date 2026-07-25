@@ -30,8 +30,8 @@ function AdminNavLink({ to, label, end }) {
         padding: "10px 12px",
         borderRadius: "var(--radius-md)",
         fontWeight: 600,
-        backgroundColor: isActive ? "var(--color-cta-bg)" : "transparent",
-        color: isActive ? "var(--color-cta-text)" : "var(--color-text)",
+        backgroundColor: isActive ? "var(--color-cyan)" : "transparent",
+        color: isActive ? "#001318" : "var(--color-text)",
         transition: "background-color 0.2s ease, color 0.2s ease",
       })}
     >

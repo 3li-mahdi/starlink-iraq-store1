@@ -94,7 +94,17 @@ export default function AdminProductsPage() {
         </div>
         <div className="form-field">
           <label>الفئة</label>
-          <input required value={form.category} onChange={(e) => setForm((f) => ({ ...f, category: e.target.value }))} />
+          <input
+            required
+            list="category-suggestions"
+            value={form.category}
+            onChange={(e) => setForm((f) => ({ ...f, category: e.target.value }))}
+          />
+          <datalist id="category-suggestions">
+            <option value="أطباق ومعدات" />
+            <option value="شبكات" />
+            <option value="اشتراكات" />
+          </datalist>
         </div>
         <div className="form-field" style={{ gridColumn: "1 / -1" }}>
           <label>الوصف</label>

@@ -1,3 +1,4 @@
+import { lazy, Suspense, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,14 +9,22 @@ import { addItemToCart } from "../features/cart/cartSlice";
 import { addWishlistItem, removeWishlistItem, selectIsInWishlist } from "../features/wishlist/wishlistSlice";
 import { showToast } from "../features/ui/uiSlice";
 
+// يُحمَّل مكوّن المعاينة ثلاثية الأبعاد بشكل منفصل (code-split) عن الحزمة الرئيسية،
+// ويُحمَّل هو نفسه فقط عند ظهور البطاقة بالشاشة فعلياً (عبر LazyCanvas بداخله)
+const ProductThumbnail3D = lazy(() => import("./three/ProductThumbnail3D"));
+const ProductQuickViewModal = lazy(() => import("./ProductQuickViewModal"));
+
 /**
- * بطاقة عرض منتج بقوائم المنتجات: صورة، اسم، سعر، تقييم، وزر إضافة سريعة للسلة.
+ * بطاقة عرض منتج بقوائم المنتجات: معاينة 3D دوّارة، اسم، سعر، تقييم، وزر إضافة سريعة للسلة.
+ * الضغط العادي على البطاقة يفتح مودال معاينة سريعة بدل الانتقال المباشر، بينما يبقى فتحها
+ * برابط حقيقي (Ctrl/Cmd + ضغط، أو فتح بتبويب جديد) يعمل بشكل طبيعي.
  */
 export default function ProductCard({ product }) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
   const isWishlisted = useSelector(selectIsInWishlist(product.id));
   const outOfStock = product.requiresShipping && product.stockQuantity === 0;
+  const [quickViewOpen, setQuickViewOpen] = useState(false);
 
   function handleAddToCart(event) {
     event.preventDefault();
@@ -38,62 +47,82 @@ export default function ProductCard({ product }) {
     }
   }
 
+  function handleCardClick(event) {
+    // نسمح بالسلوك الطبيعي للرابط (فتح بتبويب جديد، نسخ الرابط...) عند استخدام مفاتيح التعديل
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.button === 1) {
+      return;
+    }
+    event.preventDefault();
+    setQuickViewOpen(true);
+  }
+
   return (
-    <motion.div whileHover={{ y: -4 }} transition={{ duration: 0.15 }} className="card" style={{ overflow: "hidden" }}>
-      <Link to={`/products/${product.id}`}>
-        <div style={{ position: "relative", aspectRatio: "1/1", backgroundColor: "var(--color-bg)" }}>
-          {product.imageUrl ? (
-            <img src={product.imageUrl} alt={product.name} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-          ) : (
-            <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--color-text-muted)" }}>
-              📡
+    <>
+      <motion.div whileHover={{ y: -4 }} transition={{ duration: 0.15 }} className="card" style={{ overflow: "hidden" }}>
+        <Link to={`/products/${product.id}`} onClick={handleCardClick}>
+          <div style={{ position: "relative", aspectRatio: "1/1", backgroundColor: "var(--color-bg-elevated)" }}>
+            <Suspense fallback={<div className="skeleton" style={{ width: "100%", height: "100%" }} />}>
+              <ProductThumbnail3D product={product} />
+            </Suspense>
+
+            <div style={{ position: "absolute", top: 10, insetInlineStart: 10, display: "flex", flexDirection: "column", gap: 6 }}>
+              {product.discountPrice != null && product.discountPrice < product.price && (
+                <span className="badge badge-danger">خصم</span>
+              )}
+              {product.productType === "DIGITAL" && <span className="badge badge-gold">⚡ تسليم فوري</span>}
             </div>
-          )}
-          {product.discountPrice != null && product.discountPrice < product.price && (
-            <span className="badge badge-danger" style={{ position: "absolute", top: 10, insetInlineStart: 10 }}>
-              خصم
-            </span>
-          )}
-          <button
-            onClick={handleToggleWishlist}
-            aria-label="إضافة لقائمة الرغبات"
-            style={{
-              position: "absolute",
-              top: 10,
-              insetInlineEnd: 10,
-              border: "none",
-              background: "rgba(255,255,255,0.92)",
-              borderRadius: "50%",
-              width: 34,
-              height: 34,
-              fontSize: 16,
-              color: "#000000",
-              opacity: isWishlisted ? 1 : 0.55,
-              transition: "opacity 0.2s ease",
-            }}
-          >
-            {isWishlisted ? "♥" : "♡"}
+
+            <button
+              onClick={handleToggleWishlist}
+              aria-label="إضافة لقائمة الرغبات"
+              style={{
+                position: "absolute",
+                top: 10,
+                insetInlineEnd: 10,
+                border: "none",
+                background: "rgba(255,255,255,0.92)",
+                borderRadius: "50%",
+                width: 34,
+                height: 34,
+                fontSize: 16,
+                color: "#000000",
+                opacity: isWishlisted ? 1 : 0.55,
+                transition: "opacity 0.2s ease",
+              }}
+            >
+              {isWishlisted ? "♥" : "♡"}
+            </button>
+          </div>
+
+          <div style={{ padding: 14 }}>
+            <div style={{ fontSize: 12, color: "var(--color-text-muted)", marginBottom: 4 }}>{product.category}</div>
+            <h3 style={{ fontSize: 15, margin: "0 0 8px", minHeight: 40 }}>{product.name}</h3>
+            <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8 }}>
+              <StarRating value={product.averageRating} size={13} />
+              <span style={{ fontSize: 12, color: "var(--color-text-muted)" }}>({product.averageRating?.toFixed?.(1) ?? "0.0"})</span>
+            </div>
+            <PriceTag price={product.price} discountPrice={product.discountPrice} />
+            <div style={{ margin: "8px 0" }}>
+              {product.productType === "DIGITAL" ? (
+                <span className="badge badge-muted">بدون شحن</span>
+              ) : (
+                <StockBadge stockQuantity={product.stockQuantity} lowStock={product.lowStock} requiresShipping={product.requiresShipping} />
+              )}
+            </div>
+          </div>
+        </Link>
+        <div style={{ padding: "0 14px 14px" }}>
+          <button className="btn btn-cta" style={{ width: "100%" }} onClick={handleAddToCart} disabled={outOfStock}>
+            {outOfStock ? "نفذت الكمية" : "أضف للسلة"}
           </button>
         </div>
+      </motion.div>
 
-        <div style={{ padding: 14 }}>
-          <div style={{ fontSize: 12, color: "var(--color-text-muted)", marginBottom: 4 }}>{product.category}</div>
-          <h3 style={{ fontSize: 15, margin: "0 0 8px", minHeight: 40 }}>{product.name}</h3>
-          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8 }}>
-            <StarRating value={product.averageRating} size={13} />
-            <span style={{ fontSize: 12, color: "var(--color-text-muted)" }}>({product.averageRating?.toFixed?.(1) ?? "0.0"})</span>
-          </div>
-          <PriceTag price={product.price} discountPrice={product.discountPrice} />
-          <div style={{ margin: "8px 0" }}>
-            <StockBadge stockQuantity={product.stockQuantity} lowStock={product.lowStock} requiresShipping={product.requiresShipping} />
-          </div>
-        </div>
-      </Link>
-      <div style={{ padding: "0 14px 14px" }}>
-        <button className="btn btn-cta" style={{ width: "100%" }} onClick={handleAddToCart} disabled={outOfStock}>
-          {outOfStock ? "نفذت الكمية" : "أضف للسلة"}
-        </button>
-      </div>
-    </motion.div>
+      {quickViewOpen && (
+        <Suspense fallback={null}>
+          <ProductQuickViewModal product={product} onClose={() => setQuickViewOpen(false)} />
+        </Suspense>
+      )}
+    </>
   );
 }

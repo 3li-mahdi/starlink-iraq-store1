@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { setSessionFromRefresh } from "../features/auth/authSlice";
@@ -12,10 +12,12 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api
 /**
  * تحاول استعادة جلسة المستخدم عند فتح التطبيق لأول مرة عبر refresh token المخزَّن بالكوكي،
  * وتضمن وجود معرّف جلسة زائر للسلة إن لم يكن هناك مستخدم مسجَّل دخوله.
+ * @returns {boolean} isReady - true بعد اكتمال محاولة استعادة الجلسة الأولية (تُستخدم لإخفاء شاشة التحميل)
  */
 export default function useSessionBootstrap() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
     getOrCreateGuestSessionId();
@@ -31,6 +33,7 @@ export default function useSessionBootstrap() {
       })
       .finally(() => {
         dispatch(loadCart());
+        setIsReady(true);
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -41,4 +44,6 @@ export default function useSessionBootstrap() {
       dispatch(loadCart());
     }
   }, [user, dispatch]);
+
+  return isReady;
 }

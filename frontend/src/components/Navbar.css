@@ -1,9 +1,17 @@
 .navbar {
-  background-color: var(--color-bg);
+  background-color: transparent;
   color: var(--color-text);
   position: sticky;
   top: 0;
   z-index: 50;
+  border-bottom: 1px solid transparent;
+  transition: background-color var(--transition-base), border-color var(--transition-base), backdrop-filter var(--transition-base);
+}
+
+.navbar--glass {
+  background-color: rgba(8, 11, 24, 0.72);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
   border-bottom: 1px solid var(--color-border);
 }
 
@@ -29,12 +37,13 @@
   width: 32px;
   height: 32px;
   border-radius: 8px;
-  background-color: var(--color-cta-bg);
-  color: var(--color-cta-text);
+  background-color: var(--color-cyan);
+  color: #001318;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 800;
+  box-shadow: var(--glow-cyan);
 }
 
 .navbar-search {
@@ -43,15 +52,16 @@
   gap: 6px;
   flex: 1;
   max-width: 320px;
-  background-color: var(--color-surface);
+  background-color: rgba(16, 26, 51, 0.65);
   border: 1.5px solid var(--color-border-light);
   border-radius: var(--radius-md);
   padding: 6px 12px;
-  transition: border-color 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .navbar-search:focus-within {
-  border-color: var(--color-text);
+  border-color: var(--color-cyan);
+  box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.15);
 }
 
 .navbar-search input {
@@ -92,8 +102,8 @@
 
 .navbar-links a.active,
 .navbar-links a:hover {
-  color: var(--color-text);
-  border-bottom-color: var(--color-text);
+  color: var(--color-cyan);
+  border-bottom-color: var(--color-cyan);
 }
 
 .navbar-actions {
@@ -106,14 +116,16 @@
   position: relative;
   font-size: 20px;
   color: var(--color-text);
+  background: transparent;
+  border: none;
 }
 
 .navbar-cart-badge {
   position: absolute;
   top: -8px;
   inset-inline-start: -10px;
-  background-color: var(--color-cta-bg);
-  color: var(--color-cta-text);
+  background-color: var(--color-cyan);
+  color: #001318;
   font-size: 11px;
   font-weight: 800;
   border-radius: 999px;
@@ -123,6 +135,7 @@
   align-items: center;
   justify-content: center;
   padding: 0 4px;
+  box-shadow: var(--glow-cyan);
 }
 
 .navbar-user {
@@ -146,7 +159,7 @@
 }
 
 .navbar-burger:hover {
-  border-color: var(--color-text);
+  border-color: var(--color-cyan);
 }
 
 .navbar-mobile-panel {
@@ -166,7 +179,7 @@
 
 .navbar-mobile-panel a.active,
 .navbar-mobile-panel a:hover {
-  color: var(--color-text);
+  color: var(--color-cyan);
 }
 
 @media (max-width: 860px) {

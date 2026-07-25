@@ -2,6 +2,9 @@ import { Route, Routes } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import ToastContainer from "./components/ToastContainer";
+import CartDrawer from "./components/CartDrawer";
+import AuthModal from "./components/AuthModal";
+import LoadingScreen from "./components/LoadingScreen";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminRoute from "./components/AdminRoute";
 import HomePage from "./pages/HomePage";
@@ -24,15 +27,19 @@ import HelpCenterPage from "./pages/HelpCenterPage";
 import useSessionBootstrap from "./hooks/useSessionBootstrap";
 
 /**
- * جذر التطبيق: يضبط شريط التنقل، التذييل، الإشعارات، وكل مسارات الصفحات.
+ * جذر التطبيق: يضبط شريط التنقل، التذييل، الإشعارات، السلة الجانبية، مودال الدخول،
+ * شاشة التحميل الأولية، وكل مسارات الصفحات.
  */
 export default function App() {
-  useSessionBootstrap();
+  const isSessionReady = useSessionBootstrap();
 
   return (
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+      <LoadingScreen show={!isSessionReady} />
       <Navbar />
       <ToastContainer />
+      <CartDrawer />
+      <AuthModal />
       <main style={{ flex: 1 }} className="container">
         <Routes>
           <Route path="/" element={<HomePage />} />

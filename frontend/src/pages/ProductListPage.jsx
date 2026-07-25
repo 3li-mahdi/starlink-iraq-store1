@@ -7,7 +7,7 @@ import Breadcrumbs from "../components/Breadcrumbs";
 import { fetchProducts } from "../api/productsApi";
 import { useDebouncedValue } from "../hooks/useDebouncedValue";
 
-const CATEGORIES = ["", "أطباق", "راوترات", "كيبلات", "اشتراكات"];
+const CATEGORIES = ["", "أطباق ومعدات", "شبكات", "اشتراكات"];
 
 const inputStyle = {
   padding: "10px 14px",
@@ -23,7 +23,7 @@ const inputStyle = {
 export default function ProductListPage() {
   const [searchParams] = useSearchParams();
   const [search, setSearch] = useState(searchParams.get("search") || "");
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState(searchParams.get("category") || "");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [productType, setProductType] = useState("");

@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import PriceTag from "../components/PriceTag";
 import Breadcrumbs from "../components/Breadcrumbs";
 import { loadCart, removeItemFromCart, updateCartItemQuantity } from "../features/cart/cartSlice";
-import { showToast } from "../features/ui/uiSlice";
+import { openAuthModal, showToast } from "../features/ui/uiSlice";
 import { formatIqd } from "../utils/format";
 
 /**
@@ -34,8 +34,7 @@ export default function CartPage() {
 
   function handleCheckoutClick() {
     if (!user) {
-      dispatch(showToast("سجّل الدخول لإتمام عملية الشراء", "info"));
-      navigate("/login", { state: { from: { pathname: "/checkout" } } });
+      dispatch(openAuthModal({ redirectTo: "/checkout" }));
       return;
     }
     navigate("/checkout");

@@ -11,6 +11,11 @@ import ProductCard from "../components/ProductCard";
 import * as cartApi from "../api/cartApi";
 
 jest.mock("../api/cartApi");
+// نستبدل المعاينة ثلاثية الأبعاد بعنصر بسيط لأن jsdom لا يدعم WebGL بيئة الاختبارات
+jest.mock("../components/three/ProductThumbnail3D", () => ({
+  __esModule: true,
+  default: () => <div data-testid="product-thumbnail-3d-mock" />,
+}));
 
 const product = {
   id: 1,

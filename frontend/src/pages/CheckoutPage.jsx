@@ -164,8 +164,8 @@ function StepIndicator({ active, label }) {
         textAlign: "center",
         fontWeight: 700,
         fontSize: 13,
-        backgroundColor: active ? "var(--color-cta-bg)" : "var(--color-surface-alt)",
-        color: active ? "var(--color-cta-text)" : "var(--color-text-muted)",
+        backgroundColor: active ? "var(--color-cyan)" : "var(--color-surface-alt)",
+        color: active ? "#001318" : "var(--color-text-muted)",
         transition: "background-color 0.2s ease, color 0.2s ease",
       }}
     >

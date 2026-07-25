@@ -1,22 +1,33 @@
 /*
-  الثيم النهائي أحادي اللون بالكامل (Dark Mode فقط): أسود/أبيض/رصاصي، بدون أي ألوان زاهية إضافية.
-  التمييز بين الحالات (نجاح/خطأ/تنبيه) يتم عبر الأيقونات ودرجات الرصاصي والتباين، وليس بالألوان.
+  الثيم الفضائي: كحلي/أسود داكن كخلفية أساسية، سيان نيون كهربائي كلون حث رئيسي (ثقة تقنية)،
+  وذهبي للتمييز والعروض المميزة (فخامة). أحمر محجوز حصراً لشارات الندرة/التنبيه.
+  Glassmorphism على البطاقات والهيدر عند التمرير.
 */
 :root {
-  --color-bg: #000000;
-  --color-surface: #121212;
-  --color-surface-alt: #1a1a1a;
-  --color-text: #ffffff;
-  --color-text-muted: #a3a3a3;
-  --color-border: #2b2b2b;
-  --color-border-light: #3f3f3f;
-  --color-cta-bg: #ffffff;
-  --color-cta-text: #000000;
-  --color-cta-hover-bg: #d4d4d4;
+  --color-bg: #05070f;
+  --color-bg-elevated: #080b18;
+  --color-surface: rgba(18, 26, 51, 0.55);
+  --color-surface-solid: #101a33;
+  --color-surface-alt: #16213f;
+  --color-text: #eef3ff;
+  --color-text-muted: #8b9ac0;
+  --color-border: rgba(255, 255, 255, 0.09);
+  --color-border-light: rgba(255, 255, 255, 0.16);
+
+  --color-cyan: #00e5ff;
+  --color-cyan-strong: #35ecff;
+  --color-cyan-dim: #0aa8bd;
+  --color-gold: #e8c05f;
+  --color-gold-strong: #f6d685;
+  --color-danger: #ff4d67;
+  --color-danger-bg: rgba(255, 77, 103, 0.14);
+
   --radius-md: 10px;
-  --radius-lg: 16px;
-  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow-elevated: 0 10px 30px rgba(0, 0, 0, 0.6);
+  --radius-lg: 18px;
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.5), 0 12px 30px rgba(0, 0, 0, 0.35);
+  --shadow-elevated: 0 20px 50px rgba(0, 0, 0, 0.55);
+  --glow-cyan: 0 0 22px rgba(0, 229, 255, 0.35);
+  --glow-gold: 0 0 22px rgba(232, 192, 95, 0.35);
   --font-family: "Cairo", "Tahoma", system-ui, sans-serif;
   --transition-fast: 0.2s ease;
   --transition-base: 0.3s ease;
@@ -35,7 +46,11 @@ body {
 
 body {
   font-family: var(--font-family);
-  background-color: var(--color-bg);
+  background:
+    radial-gradient(ellipse 900px 500px at 15% -10%, rgba(0, 229, 255, 0.08), transparent 60%),
+    radial-gradient(ellipse 700px 500px at 100% 0%, rgba(232, 192, 95, 0.06), transparent 55%),
+    var(--color-bg);
+  background-attachment: fixed;
   color: var(--color-text);
   direction: rtl;
   line-height: 1.6;
@@ -48,7 +63,7 @@ a {
 }
 
 a:hover {
-  color: var(--color-text-muted);
+  color: var(--color-cyan);
 }
 
 button {
@@ -67,7 +82,7 @@ img {
   padding: 0 20px;
 }
 
-/* Scrollbar مخصص: نحيف، لون معكوس عن الخلفية السوداء */
+/* Scrollbar مخصص: نحيف، لون معكوس عن الخلفية الداكنة */
 * {
   scrollbar-width: thin;
   scrollbar-color: var(--color-border-light) var(--color-bg);
@@ -89,7 +104,15 @@ img {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #6b6b6b;
+  background-color: var(--color-cyan-dim);
+}
+
+/* زجاجية (Glassmorphism) */
+.glass {
+  background: var(--color-surface);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border: 1px solid var(--color-border);
 }
 
 /* أزرار عامة - كل زر يغيّر لونه بسلاسة عند مرور الماوس (0.2s-0.3s، بدون قفزة) */
@@ -104,7 +127,8 @@ img {
   font-weight: 700;
   font-size: 15px;
   transition: background-color var(--transition-base), color var(--transition-base),
-    border-color var(--transition-base), transform var(--transition-fast), opacity var(--transition-fast);
+    border-color var(--transition-base), box-shadow var(--transition-base), transform var(--transition-fast),
+    opacity var(--transition-fast);
 }
 
 .btn:active:not(:disabled) {
@@ -115,24 +139,29 @@ img {
   opacity: 0.4;
   cursor: not-allowed;
   transform: none;
+  box-shadow: none;
 }
 
 .btn-cta {
-  background-color: var(--color-cta-bg);
-  color: var(--color-cta-text);
+  background-color: var(--color-cyan);
+  color: #001318;
+  box-shadow: var(--glow-cyan);
 }
 
 .btn-cta:hover:not(:disabled) {
-  background-color: var(--color-cta-hover-bg);
+  background-color: var(--color-cyan-strong);
+  box-shadow: 0 0 30px rgba(0, 229, 255, 0.5);
 }
 
 .btn-success {
-  background-color: var(--color-cta-bg);
-  color: var(--color-cta-text);
+  background-color: var(--color-gold);
+  color: #241a03;
+  box-shadow: var(--glow-gold);
 }
 
 .btn-success:hover:not(:disabled) {
-  background-color: var(--color-cta-hover-bg);
+  background-color: var(--color-gold-strong);
+  box-shadow: 0 0 30px rgba(232, 192, 95, 0.5);
 }
 
 .btn-outline {
@@ -142,8 +171,8 @@ img {
 }
 
 .btn-outline:hover:not(:disabled) {
-  border-color: var(--color-text);
-  background-color: var(--color-surface-alt);
+  border-color: var(--color-cyan);
+  color: var(--color-cyan);
 }
 
 .btn-ghost {
@@ -164,19 +193,21 @@ img {
 }
 
 .btn-danger-text:hover:not(:disabled) {
-  color: var(--color-text);
+  color: var(--color-danger);
 }
 
 /* بطاقات */
 .card {
   background-color: var(--color-surface);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
-  transition: border-color var(--transition-base);
+  transition: border-color var(--transition-base), box-shadow var(--transition-base), transform var(--transition-base);
 }
 
-/* شارات - يميَّز بين الحالات بالأيقونة والتباين وليس باللون */
+/* شارات */
 .badge {
   display: inline-flex;
   align-items: center;
@@ -189,15 +220,21 @@ img {
 }
 
 .badge-danger {
-  background-color: var(--color-surface-alt);
-  color: var(--color-text);
-  border-style: dashed;
+  background-color: var(--color-danger-bg);
+  color: var(--color-danger);
+  border-color: rgba(255, 77, 103, 0.4);
 }
 
 .badge-success {
-  background-color: var(--color-cta-bg);
-  color: var(--color-cta-text);
-  border-color: var(--color-cta-bg);
+  background-color: rgba(0, 229, 255, 0.12);
+  color: var(--color-cyan);
+  border-color: rgba(0, 229, 255, 0.4);
+}
+
+.badge-gold {
+  background-color: rgba(232, 192, 95, 0.14);
+  color: var(--color-gold);
+  border-color: rgba(232, 192, 95, 0.4);
 }
 
 .badge-muted {
@@ -229,7 +266,7 @@ img {
 }
 
 .skeleton {
-  background: linear-gradient(90deg, var(--color-surface) 25%, var(--color-surface-alt) 37%, var(--color-surface) 63%);
+  background: linear-gradient(90deg, var(--color-surface-alt) 25%, #1e2c52 37%, var(--color-surface-alt) 63%);
   background-size: 400% 100%;
   animation: skeleton-loading 1.4s ease infinite;
   border-radius: var(--radius-md);
@@ -270,23 +307,24 @@ img {
   padding: 11px 14px;
   border-radius: var(--radius-md);
   border: 1.5px solid var(--color-border-light);
-  background-color: var(--color-surface);
+  background-color: var(--color-surface-solid);
   color: var(--color-text);
   font-size: 15px;
-  transition: border-color var(--transition-fast);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .form-field input:focus,
 .form-field select:focus,
 .form-field textarea:focus {
   outline: none;
-  border-color: var(--color-text);
+  border-color: var(--color-cyan);
+  box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.15);
 }
 
 .field-error {
-  color: var(--color-text);
+  color: var(--color-danger);
   font-size: 13px;
-  border-inline-start: 2px solid var(--color-text-muted);
+  border-inline-start: 2px solid var(--color-danger);
   padding-inline-start: 8px;
 }
 
@@ -297,6 +335,7 @@ img {
 
 .icon-btn:hover {
   transform: translateY(-1px);
+  color: var(--color-cyan);
 }
 
 /* تخطيطات متجاوبة (Responsive) */
@@ -352,5 +391,16 @@ img {
   .grid-products {
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: 12px;
+  }
+}
+
+/* يحترم تفضيل المستخدم بتقليل الحركة: نوقف الحركات/التدوير التلقائي */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
   }
 }

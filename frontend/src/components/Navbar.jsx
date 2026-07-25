@@ -1,14 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../features/auth/authSlice";
 import { selectCartItemCount } from "../features/cart/cartSlice";
+import { openCartDrawer } from "../features/ui/uiSlice";
 import "./Navbar.css";
 
 /**
- * شريط التنقل العلوي: شعار المتجر، شريط بحث، روابط التصفح، أيقونة السلة مع عداد،
- * وقائمة حساب المستخدم. يبقى ثابتاً أعلى الصفحة عند التمرير (sticky)، ويتحوّل لقائمة
- * موبايل قابلة للطي على الشاشات الصغيرة.
+ * شريط التنقل العلوي: شفاف فوق قسم Hero ويتحول لزجاجي (glassmorphism) عند التمرير،
+ * يحوي الشعار، شريط بحث، روابط التصفح، أيقونة تفتح السلة الجانبية مع عداد حقيقي من الـ Backend،
+ * وقائمة حساب المستخدم. يتحوّل لقائمة موبايل قابلة للطي على الشاشات الصغيرة.
  */
 export default function Navbar() {
   const dispatch = useDispatch();
@@ -18,6 +19,16 @@ export default function Navbar() {
 
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    function handleScroll() {
+      setScrolled(window.scrollY > 24);
+    }
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   function handleLogout() {
     dispatch(logoutUser());
@@ -31,12 +42,17 @@ export default function Navbar() {
     setMobileOpen(false);
   }
 
+  function handleOpenCart() {
+    dispatch(openCartDrawer());
+    setMobileOpen(false);
+  }
+
   function closeMobile() {
     setMobileOpen(false);
   }
 
   return (
-    <header className="navbar">
+    <header className={`navbar ${scrolled || mobileOpen ? "navbar--glass" : ""}`}>
       <div className="container navbar-inner">
         <NavLink to="/" end className="navbar-brand" onClick={closeMobile}>
           <span className="navbar-brand-badge">S</span>
@@ -84,10 +100,10 @@ export default function Navbar() {
         </nav>
 
         <div className="navbar-actions">
-          <NavLink to="/cart" className="navbar-cart icon-btn" aria-label="سلة التسوق" onClick={closeMobile}>
+          <button className="navbar-cart icon-btn" aria-label="فتح سلة التسوق" onClick={handleOpenCart}>
             🛒
             {cartCount > 0 && <span className="navbar-cart-badge">{cartCount}</span>}
-          </NavLink>
+          </button>
 
           {user ? (
             <div className="navbar-user">
